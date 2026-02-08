@@ -146,6 +146,4 @@ temp/
 # TypeScript (for when you add it later)
 *.tsbuildinfo
 
-# Optional: Keep these if you want
-# .vscode/settings.json
-# .env.example
+.claude
