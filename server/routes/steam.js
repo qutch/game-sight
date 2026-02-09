@@ -4,6 +4,7 @@ import express from 'express';
 import {
     getUserFriends,
     getPlayerSummary,
+    getPlayerStatus,
     getGameDetails,
     getOwnedGames,
     getAppList,
@@ -26,6 +27,15 @@ router.get('/player/:steamId', async (req, res) => {
         res.status(500).json({ error: error.message});
     }
 });
+
+router.get('/player/status/:steamId', async (req, res) => {
+    try {
+        const data = await getPlayerStatus(req.params.steamId);
+        res.json(data);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+})
 
 router.get('/friends/:steamId', async (req, res) => {
     try {
