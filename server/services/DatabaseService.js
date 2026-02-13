@@ -1,22 +1,32 @@
 // Database Services --> reads/writes to the database
 import { createClient } from '@supabase/supabase-js';
+import dotenv from 'dotenv';
 
 dotenv.config({path: '../.env'});
 
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
-// AUTH
-
-    // Create authenticated user
-    export async function createAuthUser() {
-        const user = await supabase.auth.admin.createUser();
-    }
-
 // USERS
 
     // Add user to USERS table
-    export async function addUserToDatabase(steamId) {
-
+    export async function addUserToDatabase(steamId, username) {
+        try {
+            const { data, error } = await supabase
+                .from('users')
+                .insert([{
+                    steam_id: steamId,
+                    steam_name: username,
+                }]);
+            if (error) {
+                console.error("Error adding user:", error);
+                return null;
+            }
+            console.log("user added to db");
+            return data;
+        } catch (error) {
+            console.error("Error adding user:", error);
+            return null;
+        }
     }
 
     // Remove user from USERS table
@@ -26,8 +36,21 @@ const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SER
 
     // Get user from USERS table
     export async function getUserFromDatabase(steamId) {
-
+    try {
+        console.log("fetching user from db");
+        const { data, error } = await supabase
+            .from('users')
+            .select('*')
+            .eq('steam_id', steamId)
+            .single();
+        
+        if (error) return null;
+        return data;
+    } catch (error) {
+        console.error('Error fetching user:', error);
+        return null;
     }
+}
 
     // Update user in USERS table
     export async function updateUserInDatabase(steamId) {

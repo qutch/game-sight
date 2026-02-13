@@ -17,8 +17,7 @@ import {
 // Constants
 const router = express.Router();
 
-
-// Routers
+// STEAM DATA ENDPOINTS
 router.get('/player/:steamId', async (req, res) => {
     try {
         const data = await getPlayerSummary(req.params.steamId);
