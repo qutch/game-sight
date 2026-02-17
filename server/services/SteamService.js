@@ -224,7 +224,7 @@ export async function getGameAchievements(appId) {
  * @returns {Promise<Object>} The player's achievement stats for the game.
  * @throws {Error} If the Steam API request fails.
  */
-export async function getPlayerAchievements(steamId, appId) {
+export async function getNumberPlayerAchievements(steamId, appId) {
     const url = `https://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v1/?key=${process.env.STEAM_API_KEY}&steamid=${steamId}&appid=${appId}`;
 
     const response = await fetch(url);
@@ -234,7 +234,9 @@ export async function getPlayerAchievements(steamId, appId) {
     }
 
     const data = await response.json();
-    return data.playerstats;
+    const achievements = data.playerstats.achievements || [];
+    const numComplete = achievements.filter(a => a.achieved === 1).length;
+    return numComplete;
 }
 
 /**

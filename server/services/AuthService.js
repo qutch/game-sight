@@ -1,6 +1,6 @@
 import SteamStrategy from "passport-steam";
 import passport from "passport";
-import { addUserToDatabase, getUserFromDatabase } from "../services/DatabaseService.js";
+import { initializeUserProfile } from "../services/DatabaseService.js";
 
 export function initializeSteamAuth() {
     passport.use(new SteamStrategy.Strategy({
@@ -18,10 +18,10 @@ export function initializeSteamAuth() {
                 username: profile.displayName,
             };
 
-            const dbUser = await getUserFromDatabase(steamId);
-            if (!dbUser) {
-                await addUserToDatabase(steamId, user.username);
-            }
+            // Initialize full profile (user + friends) on login
+            // Skips if already populated; runs in background so auth isn't blocked
+            initializeUserProfile(steamId, user.username)
+                .catch(err => console.error("Background profile init failed:", err));
 
             return done(null, user);
         } catch (err) {

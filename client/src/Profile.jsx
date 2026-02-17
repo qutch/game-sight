@@ -2,6 +2,8 @@
 import { useEffect, useState } from 'react';
 import "./index.css";
 
+import Friends from './Friends';
+
 
 function ProfileComponent() {
     const [user, setUser] = useState(null);
@@ -22,13 +24,14 @@ function ProfileComponent() {
         .catch(err => setError(err.message));
     }, []);
 
-    if (error) return <div class="text-white">Error: {error}</div>;
-    if (!user) return <div class="text-white">Not logged in</div>;
+    if (error) return <div className="text-white">Error: {error}</div>;
+    if (!user) return <div className="text-white">Not logged in</div>;
 
     return (
-        <div class="text-white">
+        <div className="text-white">
             <h1>Welcome, {user.username}!</h1>
             <p>Steam ID: {user.steamId}</p>
+            <Friends steamId={user.steamId} />
         </div>
     );
 }

@@ -9,10 +9,12 @@ import {
     getOwnedGames,
     getAppList,
     getGameAchievements,
-    getPlayerAchievements,
+    getNumberPlayerAchievements,
     getTopAchievementsForGames,
     getGlobalAchievementPercentages
 } from '../services/SteamService.js';
+
+import { getFriendsFromDatabase } from '../services/DatabaseService.js';
 
 // Constants
 const router = express.Router();
@@ -40,6 +42,15 @@ router.get('/friends/:steamId', async (req, res) => {
     try {
         const data = await getUserFriends(req.params.steamId);
         res.json(data);
+    } catch (error) {
+        res.status(500).json({ error: error.message});
+    }
+});
+
+router.get('/db-friends/:steamId', async (req, res) => {
+    try {
+        const data = await getFriendsFromDatabase(req.params.steamId);
+        res.json(data || []);
     } catch (error) {
         res.status(500).json({ error: error.message});
     }
@@ -83,7 +94,7 @@ router.get('/game-achievements/:appId', async (req, res) => {
 
 router.get('/player-achievements/:steamId/:appId', async (req, res) => {
     try {
-        const data = await getPlayerAchievements(req.params.steamId, req.params.appId);
+        const data = await getNumberPlayerAchievements(req.params.steamId, req.params.appId);
         res.json(data);
     } catch (error) {
         res.status(500).json({ error: error.message});
